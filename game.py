@@ -27,7 +27,6 @@ def main():
         
         # Get updated game state from the server
         game_state = network.receive()  # Get updated state
-        
         # Render the game
         screen.fill((0, 0, 0))  # Clear screen
         player.render(screen)

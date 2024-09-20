@@ -1,5 +1,6 @@
 import socket
 import threading
+import time
 from player import Player
 
 players = {}  # Dictionary to hold player objects
@@ -8,24 +9,29 @@ lock = threading.Lock()  # To handle synchronization when modifying the players 
 def broadcast_state():
     """
     This function sends the current game state (positions of all players)
-    to all connected clients.
+    to all connected clients at regular intervals.
     """
     while True:
         # Send the state to all connected clients
         try:
-            game_state = {addr: (player.rect.x, player.rect.y) for addr, player in players.items()}
-            
-            with lock:  # Make sure we're safe when accessing players dictionary
-                for addr, player in players.items():
-                    try:
-                        player.conn.sendall(str(game_state).encode())
-                    except:
-                        print(f"[ERROR] Unable to send game state to {addr}")
+            with lock:  # Acquire lock once before generating the game state
+                game_state = {addr: (player.rect.x, player.rect.y) for addr, player in players.items()}
+
+            # Broadcast the state to all connected clients
+            for addr, player in list(players.items()):  # Use list to safely iterate while modifying
+                try:
+                    player.conn.sendall(str(game_state).encode())  # Consider switching to a more efficient format
+                except Exception as e:
+                    print(f"[ERROR] Unable to send game state to {addr}: {e}")
+                    # Handle disconnected clients by removing them
+                    with lock:
+                        del players[addr]
+
         except Exception as e:
             print(f"[BROADCAST ERROR]: {e}")
-            
-        # Small sleep to avoid overwhelming the network (adjust as needed)
-        time.sleep(0.1)
+
+        # Small sleep to avoid overwhelming the network (adjust this value to balance latency vs performance)
+        time.sleep(0.01)  # 50ms interval = 20 updates per second
 
 def handle_client(conn, addr):
     """
@@ -50,7 +56,8 @@ def handle_client(conn, addr):
             print(f"[RECEIVED] Data from {addr}: {data}")  # Debugging line
 
             # Update player's position (assuming data is a tuple of (x, y))
-            player.update_position(eval(data))  # Convert received string to tuple
+            with lock:
+                player.update_position(eval(data))  # Convert received string to tuple
             
         except Exception as e:
             print(f"[ERROR] Error handling client {addr}: {e}")  # Debugging line
