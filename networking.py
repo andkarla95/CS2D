@@ -3,7 +3,7 @@ import socket
 class Network:
     def __init__(self):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server = '192.168.39.25'  # Server IP address
+        self.server = '192.168.39.25'
         self.port = 5555
         self.addr = (self.server, self.port)
         self.connect()
@@ -22,6 +22,6 @@ class Network:
 
     def receive(self):
         try:
-            return self.client.recv(1024).decode()  # Receive game state from the server
+            return self.client.recv(1024).decode()
         except:
-            return None
+            pass
