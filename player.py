@@ -1,5 +1,6 @@
 import pygame
 
+#test
 class Player:
     def __init__(self, x=50, y=50, width=20, height=20, color=(255, 0, 0)):
         self.rect = pygame.Rect(x, y, width, height)
