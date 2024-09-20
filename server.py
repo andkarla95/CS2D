@@ -40,6 +40,7 @@ def main():
     try:
         server.bind(('192.168.39.25', 5555))
         print("[STARTING] Server is starting...")  # Debugging line
+        print("Anders merge")
     except socket.error as e:
         print(f"[ERROR] Binding failed: {e}")  # Debugging line
         return
