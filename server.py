@@ -38,7 +38,7 @@ def main():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     
     try:
-        server.bind(('localhost', 5555))
+        server.bind(('192.168.39.25', 5555))
         print("[STARTING] Server is starting...")  # Debugging line
     except socket.error as e:
         print(f"[ERROR] Binding failed: {e}")  # Debugging line
