@@ -93,6 +93,7 @@ def handle_client(conn, addr):
             print(f"[DEBUG] Received data from {addr}: {data}")  # Debugging line
             if data.startswith("SHOOT"):
                 data = data.split("(")[0]
+                data = "S" + data.split("S")[1]
                 # Debugging
                 print(f"[DEBUG] Handling shoot event for {addr}: {data}")
                 
