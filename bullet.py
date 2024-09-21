@@ -25,7 +25,7 @@ class Bullet:
             self.immunity_frames -= 1
 
         # Deactivate the bullet if it goes off-screen (simple bounds check)
-        if self.x < 0 or self.x > 800 or self.y < 0 or self.y > 600:  # Assuming screen size 800x600
+        if self.x < 0 or self.x > 1400 or self.y < 0 or self.y > 700:  # Assuming screen size 800x600
             self.active = False
 
     def render(self, screen):
