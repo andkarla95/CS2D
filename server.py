@@ -13,7 +13,7 @@ lock = threading.Lock()  # To handle synchronization when modifying the players 
 
 # Function to handle bullet creation when a player shoots
 def handle_shoot(player, direction):
-    bullet = Bullet(player.rect.centerx, player.rect.centery, direction)
+    bullet = Bullet(player.rect.centerx, player.rect.centery, direction, owner=player)  # Pass the player as the owner
     with lock:
         bullets.append(bullet)
 
@@ -23,7 +23,21 @@ def update_bullets():
     with lock:
         for bullet in bullets:
             bullet.update()
-        # Remove inactive bullets (e.g., those that are off-screen)
+
+            # Check for collision with each player (except the owner within immunity period)
+            for addr, player in players.items():
+                if player != bullet.owner or bullet.immunity_frames == 0:  # Ignore owner for first few frames
+                    if player.rect.collidepoint(bullet.x, bullet.y):  # Bullet hits the player
+                        player.hp -= bullet.damage  # Reduce player HP by bullet damage
+                        print(f"[DEBUG] Player {addr} hit! HP: {player.hp}")  # Debugging line
+                        bullet.active = False  # Deactivate bullet after collision
+
+                        if not player.is_alive():
+                            print(f"[DEBUG] Player {addr} is dead.")  # Debugging line
+                            del players[addr]  # Remove the player when HP reaches 0
+                            break
+
+        # Remove inactive bullets (e.g., off-screen or after a collision)
         bullets = [bullet for bullet in bullets if bullet.active]
 
 # Function to broadcast the game state (players and bullets) to all clients
@@ -31,9 +45,9 @@ def broadcast_state():
     while True:
         try:
             with lock:
-                # Convert player address tuples to strings (IP:Port)
+                # Include HP in the player data
                 game_state = {
-                    "players": {f"{addr[0]}:{addr[1]}": (player.rect.x, player.rect.y) for addr, player in players.items()},
+                    "players": {f"{addr[0]}:{addr[1]}": (player.rect.x, player.rect.y, player.hp) for addr, player in players.items()},
                     "bullets": [(bullet.x, bullet.y) for bullet in bullets if bullet.active]
                 }
 
@@ -50,11 +64,9 @@ def broadcast_state():
         except Exception as e:
             print(f"[BROADCAST ERROR]: {e}")
 
-        # Update bullet positions before broadcasting the next state
         update_bullets()
-
-        # Small delay to control the update rate (e.g., 20 times per second)
         time.sleep(0.05)
+
 
 
 

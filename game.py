@@ -53,11 +53,16 @@ def main():
         screen.fill((0, 0, 0))  # Clear the screen
         
         # Render other players (use string-based player addresses)
-        for addr, pos in other_players.items():
-            if addr != f"{network.addr[0]}:{network.addr[1]}":  # Check string-formatted local player address
-                pygame.draw.rect(screen, (0, 0, 255), pygame.Rect(pos[0], pos[1], 20, 20))  # Blue for other players
+        # Render other players
+        for addr, data in other_players.items():
+            if addr != f"{network.addr[0]}:{network.addr[1]}":  # Don't render the local player
+                pos_x, pos_y, hp = data  # Include HP
+                pygame.draw.rect(screen, (0, 0, 255), pygame.Rect(pos_x, pos_y, 20, 20))  # Blue for other players
+                # Render HP above the player
+                font = pygame.font.SysFont(None, 24)
+                hp_text = font.render(f"HP: {hp}", True, (255, 255, 255))
+                screen.blit(hp_text, (pos_x, pos_y - 20))
 
-        # Render bullets received from the server
         for bullet_pos in bullets:
             pygame.draw.circle(screen, (255, 255, 255), (int(bullet_pos[0]), int(bullet_pos[1])), 5)
 
