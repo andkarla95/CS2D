@@ -29,7 +29,6 @@ def update_bullets():
                 if player != bullet.owner or bullet.immunity_frames == 0:  # Ignore owner for first few frames
                     if player.rect.collidepoint(bullet.x, bullet.y):  # Bullet hits the player
                         player.hp -= bullet.damage  # Reduce player HP by bullet damage
-                        print(f"[DEBUG] Player {addr} hit! HP: {player.hp}")  # Debugging line
                         bullet.active = False  # Deactivate bullet after collision
 
                         if not player.is_alive():
@@ -89,13 +88,9 @@ def handle_client(conn, addr):
             if not data:
                 print(f"[DISCONNECT] {addr} disconnected.")
                 break
-
-            print(f"[DEBUG] Received data from {addr}: {data}")  # Debugging line
             if data.startswith("SHOOT"):
                 data = data.split("(")[0]
                 data = "S" + data.split("S")[1]
-                # Debugging
-                print(f"[DEBUG] Handling shoot event for {addr}: {data}")
                 
                 # Extract shooting direction from the data (assumed to be in the format "SHOOT,x,y")
                 _, target_x, target_y = data.split(',')
