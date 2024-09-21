@@ -9,29 +9,30 @@ lock = threading.Lock()  # To handle synchronization when modifying the players 
 def broadcast_state():
     """
     This function sends the current game state (positions of all players)
-    to all connected clients at regular intervals.
+    to all connected clients.
     """
     while True:
-        # Send the state to all connected clients
         try:
-            with lock:  # Acquire lock once before generating the game state
+            # Prepare the game state with the positions of all players
+            with lock:
                 game_state = {addr: (player.rect.x, player.rect.y) for addr, player in players.items()}
 
             # Broadcast the state to all connected clients
             for addr, player in list(players.items()):  # Use list to safely iterate while modifying
                 try:
-                    player.conn.sendall(str(game_state).encode())  # Consider switching to a more efficient format
+                    # Send the game state to each player
+                    player.conn.sendall(str(game_state).encode())
                 except Exception as e:
                     print(f"[ERROR] Unable to send game state to {addr}: {e}")
-                    # Handle disconnected clients by removing them
+                    # Handle disconnected clients
                     with lock:
                         del players[addr]
 
         except Exception as e:
             print(f"[BROADCAST ERROR]: {e}")
 
-        # Small sleep to avoid overwhelming the network (adjust this value to balance latency vs performance)
-        time.sleep(0.01)  # 50ms interval = 20 updates per second
+        # Small sleep to avoid overwhelming the network
+        time.sleep(0.05)  # 20 updates per second
 
 def handle_client(conn, addr):
     """
@@ -74,7 +75,7 @@ def main():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     
     try:
-        server.bind(('192.168.39.25', 5555))  # Use the correct IP address of the server machine
+        server.bind(('192.168.255.25', 5555))  # Use the correct IP address of the server machine
         print("[STARTING] Server is starting...")  # Debugging line
     except socket.error as e:
         print(f"[ERROR] Binding failed: {e}")  # Debugging line

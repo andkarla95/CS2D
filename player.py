@@ -1,10 +1,10 @@
 import pygame
 
-#test
 class Player:
     def __init__(self, x=50, y=50, width=20, height=20, color=(255, 0, 0)):
         self.rect = pygame.Rect(x, y, width, height)
         self.velocity = 5
+        self.color = color  # Allow for custom colors
 
     def handle_input(self):
         keys = pygame.key.get_pressed()
@@ -24,4 +24,4 @@ class Player:
         self.rect.x, self.rect.y = position
 
     def render(self, screen):
-        pygame.draw.rect(screen, (255, 0, 0), self.rect)
+        pygame.draw.rect(screen, self.color, self.rect)  # Render using the player's color
