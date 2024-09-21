@@ -37,8 +37,8 @@ def broadcast_state():
                     "bullets": [(bullet.x, bullet.y) for bullet in bullets if bullet.active]
                 }
 
-            # Send the game state as a JSON string
-            game_state_json = json.dumps(game_state)
+            # Send the game state as a JSON string with a newline as a separator
+            game_state_json = json.dumps(game_state) + "\n"
             for addr, player in list(players.items()):
                 try:
                     player.conn.sendall(game_state_json.encode())
@@ -55,6 +55,7 @@ def broadcast_state():
 
         # Small delay to control the update rate (e.g., 20 times per second)
         time.sleep(0.05)
+
 
 
 def handle_client(conn, addr):
