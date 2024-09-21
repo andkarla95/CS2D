@@ -2,6 +2,7 @@ import pygame
 import sys
 from player import Player
 from networking import Network
+import json
 
 # Configuration
 WIDTH, HEIGHT = 800, 600
@@ -17,28 +18,44 @@ def main():
     
     running = True
     other_players = {}  # To store other players' positions
+    bullets = []  # To store bullet positions received from the server
 
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                # Shoot a bullet toward the mouse click
+                target_x, target_y = pygame.mouse.get_pos()
+                # Send a "SHOOT" message to the server
+                shoot_message = f"SHOOT,{target_x},{target_y}"
+                network.send(shoot_message)
 
         # Get player input (WASD) and send the position to the server
         player.handle_input()
         network.send(player.get_position())  # Send local player's position to the server
 
-        # Get the game state (positions of all players) from the server
+        # Get the game state (positions of all players and bullets) from the server
         game_state = network.receive()
         if game_state:
-            other_players = eval(game_state)  # Convert received string to dictionary
-        
+            try:
+                game_data = json.loads(game_state)  # Use json.loads() to safely parse the game state
+                other_players = game_data["players"]
+                bullets = game_data["bullets"]
+            except Exception as e:
+                print(f"[ERROR] Could not evaluate game state: {e}")
+
         # Render the game
         screen.fill((0, 0, 0))  # Clear the screen
         
-        # Render other players
+        # Render other players (use string-based player addresses)
         for addr, pos in other_players.items():
-            if addr != network.addr:  # Do not draw the local player from the received state
+            if addr != f"{network.addr[0]}:{network.addr[1]}":  # Check string-formatted local player address
                 pygame.draw.rect(screen, (0, 0, 255), pygame.Rect(pos[0], pos[1], 20, 20))  # Blue for other players
+
+        # Render bullets received from the server
+        for bullet_pos in bullets:
+            pygame.draw.circle(screen, (255, 255, 255), (int(bullet_pos[0]), int(bullet_pos[1])), 5)
 
         # Render local player (red)
         player.render(screen)
