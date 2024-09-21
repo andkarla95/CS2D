@@ -8,8 +8,13 @@ import json
 WIDTH, HEIGHT = 1400, 700
 FPS = 120
 
+
 def main():
     pygame.init()
+    pygame.mixer.init()
+    audio = pygame.mixer.Sound("audio/background.mp3")
+    audio.play(loops=-1)
+
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
     
