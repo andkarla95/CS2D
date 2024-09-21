@@ -6,7 +6,7 @@ import json
 
 # Configuration
 WIDTH, HEIGHT = 800, 600
-FPS = 60
+FPS = 120
 
 def main():
     pygame.init()

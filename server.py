@@ -65,7 +65,7 @@ def broadcast_state():
             print(f"[BROADCAST ERROR]: {e}")
 
         update_bullets()
-        time.sleep(0.05)
+        time.sleep(0.01)
 
 
 

@@ -6,7 +6,7 @@ class Bullet:
         self.y = y
         self.direction = direction  # Aiming direction (a vector)
         self.owner = owner  # The player who fired the bullet
-        self.speed = speed
+        self.speed = 10
         self.color = color
         self.radius = radius
         self.active = True  # To track if the bullet is still active (for collision or off-screen)
