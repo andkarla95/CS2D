@@ -26,13 +26,13 @@ class Player:
                 # Keep the player within the screen bounds (assuming screen size 800x600)
         if self.rect.x < 0:
             self.rect.x = 0
-        elif self.rect.x + self.rect.width > 800:
-            self.rect.x = 800 - self.rect.width
+        elif self.rect.x + self.rect.width > 1400:
+            self.rect.x = 1400 - self.rect.width
 
         if self.rect.y < 0:
             self.rect.y = 0
-        elif self.rect.y + self.rect.height > 600:
-            self.rect.y = 600 - self.rect.height
+        elif self.rect.y + self.rect.height > 700:
+            self.rect.y = 700 - self.rect.height
     
     def is_alive(self):
         return self.hp > 0

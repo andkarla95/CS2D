@@ -5,7 +5,7 @@ from networking import Network
 import json
 
 # Configuration
-WIDTH, HEIGHT = 800, 600
+WIDTH, HEIGHT = 1400, 700
 FPS = 120
 
 def main():
