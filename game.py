@@ -21,6 +21,7 @@ def main():
     bullets = []  # To store bullet positions received from the server
 
     while running:
+        shoot_message = ""
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -29,11 +30,14 @@ def main():
                 target_x, target_y = pygame.mouse.get_pos()
                 # Send a "SHOOT" message to the server
                 shoot_message = f"SHOOT,{target_x},{target_y}"
-                network.send(shoot_message)
+                # network.send(shoot_message)
 
         # Get player input (WASD) and send the position to the server
         player.handle_input()
-        network.send(player.get_position())  # Send local player's position to the server
+        if shoot_message.startswith("SHOOT"):
+            network.send(shoot_message)
+        else:
+            network.send(player.get_position())  # Send local player's position to the server
 
         # Get the game state (positions of all players and bullets) from the server
         game_state = network.receive()
