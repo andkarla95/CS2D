@@ -3,7 +3,7 @@ import pygame
 class Player:
     def __init__(self, x=50, y=50, width=20, height=20, color=(255, 0, 0), hp=100):
         self.rect = pygame.Rect(x, y, width, height)
-        self.velocity = 1
+        self.velocity = 2
         self.color = color
         self.hp = hp  # Add health to the player
 

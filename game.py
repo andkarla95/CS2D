@@ -47,7 +47,7 @@ def main():
                 other_players = game_data["players"]
                 bullets = game_data["bullets"]
             except Exception as e:
-                print(f"[ERROR] Could not evaluate game state: {e}")
+                print(f"[ERROR] Could dnot evaluate game state: {e}")
 
         # Render the game
         screen.fill((0, 0, 0))  # Clear the screen

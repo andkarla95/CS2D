@@ -91,8 +91,8 @@ def handle_client(conn, addr):
                 break
 
             print(f"[DEBUG] Received data from {addr}: {data}")  # Debugging line
-
             if data.startswith("SHOOT"):
+                data = data.split("(")[0]
                 # Debugging
                 print(f"[DEBUG] Handling shoot event for {addr}: {data}")
                 
@@ -103,7 +103,7 @@ def handle_client(conn, addr):
                 handle_shoot(player, direction)  # Handle shooting
             else:
                 # Otherwise, update player position (assuming data is position tuple)
-                position = eval(data)
+                position = eval(data.split(")")[0] +")")
                 player.update_position(position)
 
         except Exception as e:
@@ -121,7 +121,7 @@ def main():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     
     try:
-        server.bind(('192.168.255.25', 5555))  # Use the correct IP address of the server machine
+        server.bind(('192.168.244.25', 5555))  # Use the correct IP address of the server machine
         print("[STARTING] Server is starting...")
     except socket.error as e:
         print(f"[ERROR] Binding failed: {e}")

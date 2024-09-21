@@ -1,12 +1,12 @@
 import pygame
 
 class Bullet:
-    def __init__(self, x, y, direction, owner, speed=10, color=(255, 255, 255), radius=5, damage=10):
+    def __init__(self, x, y, direction, owner, speed=6, color=(255, 255, 255), radius=5, damage=10):
         self.x = x
         self.y = y
         self.direction = direction  # Aiming direction (a vector)
         self.owner = owner  # The player who fired the bullet
-        self.speed = 10
+        self.speed = speed
         self.color = color
         self.radius = radius
         self.active = True  # To track if the bullet is still active (for collision or off-screen)
